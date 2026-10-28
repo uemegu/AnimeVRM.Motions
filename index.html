@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AnimeVRM Motions</title>
+    <meta name="description" content="VRM 向けのポーズのモーション（Mixamo 形式の FBX）。呼吸の強さを選んでダウンロードできます。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="AnimeVRM Motions" />
+    <meta property="og:description" content="VRM 向けのポーズのモーション（Mixamo 形式の FBX）。呼吸の強さを選んでダウンロードできます。" />
+    <meta property="og:url" content="https://uemegu.github.io/AnimeVRM.Motions/" />
+    <meta property="og:image" content="https://uemegu.github.io/AnimeVRM.Motions/ogp.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <header class="bar">
+      <h1>AnimeVRM Motions</h1>
+      <p>ポーズのモーション（Mixamo 形式の FBX・6 秒のループ）</p>
+      <p class="caution">モーション適用結果の見栄えは骨格によって異なります</p>
+    </header>
+    <main class="layout">
+      <section class="catalog" aria-label="モーションの一覧">
+        <div class="filters" id="filters" role="tablist"></div>
+        <ul class="grid" id="grid"></ul>
+      </section>
+      <section class="viewer" aria-label="プレビュー">
+        <div class="stage" id="stage">
+          <canvas id="canvas"></canvas>
+          <div class="loading" id="loading">読み込み中</div>
+        </div>
+        <div class="panel">
+          <div class="title">
+            <span class="number" id="number"></span>
+            <h2 id="name"></h2>
+            <span class="category" id="category"></span>
+          </div>
+          <label class="slider">
+            <span class="label">呼吸の強さ</span>
+            <input type="range" id="breath" min="0" max="150" step="5" value="80" />
+            <output id="breathValue">80%</output>
+          </label>
+          <p class="note">待機モーションの胴の動きを混ぜる割合です。0% で止まった姿勢、100% で待機モーションと同じ大きさになります。</p>
+          <button type="button" class="download" id="download">FBX をダウンロード</button>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "anime-vrm-motions",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:pages": "SITE_BASE=/AnimeVRM.Motions/ vite build --outDir docs --emptyOutDir && touch docs/.nojekyll",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@pixiv/three-vrm": "^3.5.5",
+    "three": "0.183.2",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/three": "^0.183.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.0.3"
+  }
+}

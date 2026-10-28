@@ -1,0 +1,169 @@
+{
+  "id": "day",
+  "name": "昼",
+  "description": "明るく抜けの良い日中光と強い太陽光条",
+  "lighting": {
+    "hairRingTint": "#f2f5ff",
+    "directional": {
+      "color": "#ffffff",
+      "intensity": 3.2,
+      "position": {
+        "x": -1.9,
+        "y": 1.5,
+        "z": 2.6
+      }
+    },
+    "ambient": {
+      "color": "#776e74",
+      "intensity": 1
+    },
+    "rim": {
+      "enabled": false,
+      "color": "#dde8ff",
+      "intensity": 0.05,
+      "position": {
+        "x": 0,
+        "y": 1.5,
+        "z": 2.5
+      }
+    },
+    "sunShafts": {
+      "enabled": true,
+      "followDirectionalLight": false,
+      "sunPosition": {
+        "x": 3.2,
+        "y": 4.3,
+        "z": -3.8
+      },
+      "exposure": 0.22,
+      "decay": 0.83,
+      "density": 0.35,
+      "weight": 0.08,
+      "color": "#fff2db",
+      "shimmer": 0.25
+    },
+    "lensFlare": {
+      "enabled": true,
+      "sunSize": 1.3,
+      "sunColor": "#fffbf5",
+      "glowIntensity": 0.95,
+      "starburstIntensity": 0.05,
+      "anamorphicIntensity": 1.15,
+      "ghostIntensity": 0.35,
+      "haloIntensity": 0.5
+    }
+  },
+  "postProcessing": {
+    "bloom": {
+      "enabled": true,
+      "strength": 0.07,
+      "radius": 0.7,
+      "threshold": 0.9
+    },
+    "cinematic": {
+      "diffusion": {
+        "enabled": true,
+        "strength": 0.12,
+        "radius": 2
+      },
+      "colorGrading": {
+        "enabled": true,
+        "shadowTint": "#0b1b60",
+        "highlightTint": "#9a8518",
+        "strength": 0.5,
+        "contrast": 0.13,
+        "gamma": 1
+      },
+      "adjustments": {
+        "saturation": 0.26,
+        "brightness": 0,
+        "contrast": 0
+      },
+      "vignette": {
+        "enabled": true,
+        "offset": 1.15,
+        "darkness": 0.08,
+        "color": "#1a1829"
+      },
+      "chromaticAberration": {
+        "enabled": true,
+        "offset": 0.0015
+      },
+      "sharpen": {
+        "enabled": false,
+        "amount": 0.22
+      }
+    }
+  },
+  "materials": {
+    "body": {
+      "color": "#ffffff",
+      "shadeMultiply": "#d89484",
+      "shadingToonyFactor": 0.95,
+      "shadingShiftFactor": -0.05,
+      "terminatorColor": "#ff8568",
+      "terminatorStrength": 0.65,
+      "giEqualizationFactor": 0.9,
+      "matcapEnabled": true,
+      "emissiveIntensity": 0,
+      "rimEnabled": false,
+      "rimColor": "#ffffff",
+      "parametricRimFresnelPowerFactor": 5,
+      "parametricRimLiftFactor": 0.1,
+      "rimLightingMixFactor": 0.1,
+      "outlineWidthFactor": 0.0016
+    },
+    "hair": {
+      "color": "#ffffff",
+      "shadeMultiply": "#7d6da0",
+      "shadingToonyFactor": 0.994,
+      "shadingShiftFactor": -0.05,
+      "terminatorColor": "#eb7c6e",
+      "terminatorStrength": 0.45,
+      "giEqualizationFactor": 0.9,
+      "matcapEnabled": false,
+      "emissiveIntensity": 0,
+      "rimEnabled": false,
+      "rimColor": "#ffffff",
+      "parametricRimFresnelPowerFactor": 0,
+      "parametricRimLiftFactor": 0.1,
+      "rimLightingMixFactor": 0.2,
+      "outlineWidthFactor": 0.0016
+    },
+    "cloth": {
+      "color": "#ffffff",
+      "litHighlightStrength": 0.7,
+      "litHighlightThreshold": 0.78,
+      "litHighlightColor": "#2a2116",
+      "shadeMultiply": "#a6aed0",
+      "shadingToonyFactor": 0.997,
+      "shadingShiftFactor": -0.05,
+      "terminatorColor": "#d68298",
+      "terminatorStrength": 0.35,
+      "darkLitLift": 1,
+      "giEqualizationFactor": 0.9,
+      "matcapEnabled": false,
+      "emissiveIntensity": 0,
+      "rimEnabled": false,
+      "rimColor": "#202942",
+      "parametricRimFresnelPowerFactor": 4,
+      "parametricRimLiftFactor": 0.02,
+      "rimLightingMixFactor": 1,
+      "outlineWidthFactor": 0.0016
+    }
+  },
+  "outline": {
+    "enabled": true,
+    "useSmoothNormal": true,
+    "screenSpaceWidth": true,
+    "autoLineWeight": true,
+    "darknessFactor": 0.1,
+    "widthFactor": 0.0016,
+    "lightingMixFactor": 0.25
+  },
+  "fog": {
+    "enabled": true,
+    "color": "#e2f0ff",
+    "density": 0.01
+  }
+}

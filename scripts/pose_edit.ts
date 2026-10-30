@@ -1,5 +1,5 @@
 /**
- * ポーズの FBX の腕を直す。曲線の値だけを書き換え、呼吸の混ぜ方（1 フレーム目からの差）はそのまま残す。
+ * ポーズの FBX の腕を直す。曲線の値だけを書き換える（全フレームに同じ回転を掛ける）。
  *
  * 使い方: node scripts/pose_edit.ts scripts/pose_fixes.json
  * pose_fixes.json の各項目（public/motions/<id>.fbx をその場で書き換える。直しは元の FBX に対して一度だけ当てる）:

@@ -3,7 +3,7 @@
 使い方（絵の切り抜きに Pillow と numpy を使うので、motion-create の venv で動かす）:
   ~/git/practice/motion-create/.venv/bin/python scripts/import_motions.py <集めた FBX のフォルダ（index.json がある所）> <motion-create の変換の出力フォルダ>
 書き出すもの:
-  public/motions/<id>.fbx   モーション（呼吸の強さ 0.8 で混ぜたもの）
+  public/motions/<id>.fbx   モーション（motion-create が混ぜた呼吸は scripts/strip_breath.ts で抜く）
   public/thumbs/<id>.avif   一覧の絵（motion-create が描いたアオイの姿勢。ポーズ集の線画は再配布できないので使わない）
   src/motions.json          一覧
 """
@@ -59,5 +59,7 @@ with tempfile.TemporaryDirectory() as tmp:
         entries.append({'id': motion_id, 'number': number, 'line': line,
                         'name': item['name'], 'category': item.get('category') or '上半身'})
 
+# 呼吸はサイトで式から付ける（src/fbx/breath.ts）ので、motion-create が混ぜた待機モーションは抜く
+subprocess.run(['node', root / 'scripts/strip_breath.ts', motions_dir], check=True)
 (root / 'src/motions.json').write_text(json.dumps(entries, ensure_ascii=False, indent=1) + '\n')
 print(f'{len(entries)} 本')

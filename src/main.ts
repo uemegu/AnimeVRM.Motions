@@ -9,7 +9,7 @@ import { registerEnvironment } from '../engine/src/stage/environments';
 import { configureAssets } from '../engine/src/utils/path';
 import type { LocationVisualPreset, TimeOfDayPreset } from '../engine/src/schema/visual';
 import { type FbxFile, readFbx, writeFbx } from './fbx/binary.ts';
-import { BAKED_STRENGTH, withBreath } from './fbx/breath.ts';
+import { withBreath } from './fbx/breath.ts';
 import { readBones, worldPose } from './fbx/skeleton.ts';
 import { disposePaintedGround, loadPaintedGround } from './sets/painted-ground/PaintedGround';
 import day from './day.json';
@@ -86,7 +86,7 @@ async function bake(id: string, percent: number): Promise<{ blob: Blob; url: str
   if (!result) {
     const strength = percent / 100;
     const file = await source(id);
-    const bytes = strength === BAKED_STRENGTH ? writeFbx(file) : writeFbx(withBreath(file, strength));
+    const bytes = writeFbx(withBreath(file, strength));
     const blob = new Blob([bytes], { type: 'application/octet-stream' });
     result = { blob, url: URL.createObjectURL(blob) };
     baked.set(key, result);

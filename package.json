@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "build:pages": "SITE_BASE=/AnimeVRM.Motions/ vite build --outDir docs --emptyOutDir && touch docs/.nojekyll",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check:contacts": "node scripts/check_contacts.ts"
   },
   "dependencies": {
     "@pixiv/three-vrm": "^3.5.5",

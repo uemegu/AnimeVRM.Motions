@@ -12,6 +12,7 @@ export interface Bone {
   translation: THREE.Vector3;
   /** 移動の X・Y・Z 曲線（cm。腰だけ） */
   translationCurves: [Float32Array, Float32Array, Float32Array] | null;
+  setTranslation: ((values: [Float32Array, Float32Array, Float32Array]) => void) | null;
   /** 回転の X・Y・Z 曲線（度） */
   rotation: [Float32Array, Float32Array, Float32Array] | null;
   setRotation: ((values: [Float32Array, Float32Array, Float32Array]) => void) | null;
@@ -72,6 +73,11 @@ export function readBones(file: FbxFile): Map<string, Bone> {
       name, parent: null,
       translation: new THREE.Vector3(...t),
       translationCurves: moves?.[0] && moves[1] && moves[2] ? [values(moves[0]), values(moves[1]), values(moves[2])] : null,
+      setTranslation: moves?.[0] && moves[1] && moves[2] ? (v) => moves.forEach((curve, j) => {
+        child(curve, 'KeyValueFloat')!.props[0] = { type: 'f', value: v[j] };
+        const def = child(curve, 'Default');
+        if (def) def.props[0] = { type: 'D', value: v[j][0] };
+      }) : null,
       rotation: list ? [values(list[0]), values(list[1]), values(list[2])] : null,
       setRotation: list ? (v) => list.forEach((curve, j) => {
         child(curve, 'KeyValueFloat')!.props[0] = { type: 'f', value: v[j] };

@@ -10,10 +10,14 @@ import { configureAssets } from '../engine/src/utils/path';
 import type { LocationVisualPreset, TimeOfDayPreset } from '../engine/src/schema/visual';
 import { type FbxFile, readFbx, writeFbx } from './fbx/binary.ts';
 import { withBreath } from './fbx/breath.ts';
+import { withContact, type ContactProfile } from './fbx/contact.ts';
 import { readBones, worldPose } from './fbx/skeleton.ts';
-import { disposePaintedGround, loadPaintedGround } from './sets/painted-ground/PaintedGround';
+import { previewPlacement, type PreviewPlacement, type PreviewPose } from './previewPlacement.ts';
+import { disposePaintedAoiRoom, loadPaintedAoiRoom } from './sets/painted-aoi-room/PaintedAoiRoom';
+import { STANDING_ORIGIN } from './sets/painted-aoi-room/layout';
 import day from './day.json';
 import motions from './motions.json';
+import contactProfiles from './contactProfiles.json';
 
 interface Motion {
   id: string;
@@ -26,23 +30,32 @@ interface Motion {
 const base = import.meta.env.BASE_URL;
 /** 手で回すカメラの画角 */
 const FOV = 35;
+/** 床のプレビューは、会話の立ち位置より少しテーブルから離す。 */
+const PREVIEW_FORWARD_OFFSET = 0.55;
 const list = motions as Motion[];
+const contacts = contactProfiles as unknown as Record<string, ContactProfile>;
 
 // 待機モーションは使わない（選んだモーションだけを流す）
 configureAssets({ idleMotion: null });
 
-registerEnvironment('painted-ground', { load: loadPaintedGround, dispose: disposePaintedGround });
+registerEnvironment('painted-aoi-room', { load: loadPaintedAoiRoom, dispose: disposePaintedAoiRoom });
 
-/** 中庭（本体リポジトリの courtyard と同じ置き方。原点は中庭の真ん中の開けた所） */
-const courtyard: LocationVisualPreset = {
-  id: 'courtyard',
-  name: '中庭',
-  isIndoor: false,
+/** 本体の aoi_house_frontlit の順光。プレビューのため、テーブルから少し離れた床を原点にする。 */
+const aoiRoom: LocationVisualPreset = {
+  id: 'aoi_house_frontlit',
+  name: 'アオイの部屋（順光・簡易3D）',
+  isIndoor: true,
   layers: { background: { url: '/textures/painted-classroom/sky-only.png' } },
-  environment: { model: 'builtin:painted-ground', position: { x: -27, y: 0, z: -8 }, rotationY: 0, scale: 1 },
-  light: { direction: { x: -1.6, y: 2.2, z: 2.4 }, shadow: { color: '#63738a', opacity: 0.65, softness: 4 } },
-  wind: { direction: { x: 0.8, y: 0, z: 0.4 }, strength: 0.055, gust: 0.6 },
-  stage: { camera: { far: 200, fov: FOV, depthOfField: { aperture: 0.01, maxBlur: 0.004, sharpRange: 10 } } },
+  environment: {
+    model: 'builtin:painted-aoi-room',
+    position: { x: -STANDING_ORIGIN[0], y: -STANDING_ORIGIN[1], z: -STANDING_ORIGIN[2] - PREVIEW_FORWARD_OFFSET },
+    rotationY: 0, scale: 1,
+  },
+  light: { direction: { x: 0.8, y: 1.3, z: 2 }, shadow: { color: '#8a6450', opacity: 0.4, softness: 3 } },
+  stage: {
+    postProcessing: { sunShafts: false, lensFlare: false },
+    camera: { fov: FOV, depthOfField: { aperture: 0.01, maxBlur: 0.004, sharpRange: 10 } },
+  },
 };
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -54,9 +67,9 @@ const download = $<HTMLButtonElement>('download');
 
 const stage = new StageManager({
   canvas,
-  presets: { timeOfDay: { day: day as TimeOfDayPreset }, locations: { courtyard } },
+  presets: { timeOfDay: { day: day as TimeOfDayPreset }, locations: { [aoiRoom.id]: aoiRoom } },
   initialTimeOfDay: 'day',
-  initialLocationId: 'courtyard',
+  initialLocationId: aoiRoom.id,
 });
 const resize = () => stage.resize(canvas.clientWidth, canvas.clientHeight);
 new ResizeObserver(resize).observe(canvas);
@@ -86,7 +99,7 @@ async function bake(id: string, percent: number): Promise<{ blob: Blob; url: str
   if (!result) {
     const strength = percent / 100;
     const file = await source(id);
-    const bytes = writeFbx(withBreath(file, strength));
+    const bytes = writeFbx(withBreath(withContact(file, contacts[id]), strength));
     const blob = new Blob([bytes], { type: 'application/octet-stream' });
     result = { blob, url: URL.createObjectURL(blob) };
     baked.set(key, result);
@@ -156,7 +169,7 @@ function renderGrid() {
  * 1 フレーム目の骨の位置から、体の範囲（足元が原点）と頭の位置を求める。
  * 描画を待たずに選んだ時点で構図を決められる（FBX の骨はアオイの体型に合わせてある）
  */
-function poseOf(file: FbxFile): { box: THREE.Box3; head: THREE.Vector3 } {
+function poseOf(file: FbxFile): PreviewPose {
   const bones = readBones(file);
   const box = new THREE.Box3();
   for (const bone of bones.values()) box.expandByPoint(worldPose(bone).position);
@@ -164,7 +177,12 @@ function poseOf(file: FbxFile): { box: THREE.Box3; head: THREE.Vector3 } {
   box.expandByScalar(0.1);
   box.min.y = Math.max(box.min.y, 0);
   const head = bones.get('Head');
-  return { box, head: head ? worldPose(head).position : new THREE.Vector3(0, 1.37, 0) };
+  const hips = bones.get('Hips');
+  return {
+    box,
+    head: head ? worldPose(head).position : new THREE.Vector3(0, 1.37, 0),
+    hips: hips ? worldPose(hips).position : new THREE.Vector3(0, 0.8, 0),
+  };
 }
 
 let request = 0;
@@ -177,18 +195,27 @@ async function show() {
   try {
     const { url } = await bake(motion.id, Number(breath.value));
     if (ticket !== request) return;
+    const pose = poseOf(withContact(await source(motion.id), contacts[motion.id]));
+    if (ticket !== request) return;
+    const placement = previewPlacement(motion, pose, aoiRoom.environment!.position);
     await stage.setCast([{
-      id: 'aoi', modelUrl: `${base}models/aoi.vrm`, position: [0, 0, 0], rotationY: 0,
+      id: 'aoi', modelUrl: `${base}models/aoi.vrm`,
+      position: placement.position.toArray(), rotationY: placement.rotationY,
       expression: 'neutral', expressionWeight: 1, motion: url, motionLoop: true,
     }]);
     // 置き直すと構図の画角に戻るので、描かれる前に構図ごと決め直す
-    const { box, head } = poseOf(await source(motion.id));
     if (ticket !== request) return;
+    const avatar = await stage.loadAvatar('aoi', `${base}models/aoi.vrm`);
+    if (ticket !== request) return;
+    // 腿への接触を FBX で合わせた姿勢は、前腕の太さを一律に使う押し出しで再び浮かせない。
+    const onThigh = Object.values(contacts[motion.id]?.hands ?? {}).some(hand => hand?.surface === 'thigh');
+    avatar.setHandClearance(onThigh ? 'off' : stage.getQuality().handClearance);
     if (motion.line === 'upper') {
       // 上半身はポーズで頭が前後するので、頭の位置に正面から寄る
+      const head = pose.head.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), placement.rotationY).add(placement.position);
       frame(new THREE.Vector3(head.x, head.y - 0.12, head.z), 0.75, 0);
     } else {
-      frameBody(box);
+      frameBody(pose.box, placement);
     }
   } catch (error) {
     console.error(error);
@@ -198,14 +225,19 @@ async function show() {
 }
 
 /** 全身を、体の範囲が収まるように撮る */
-function frameBody(box: THREE.Box3) {
+function frameBody(box: THREE.Box3, placement: PreviewPlacement) {
   const size = box.getSize(new THREE.Vector3());
-  const center = box.getCenter(new THREE.Vector3());
+  const center = box.getCenter(new THREE.Vector3())
+    .applyAxisAngle(new THREE.Vector3(0, 1, 0), placement.rotationY).add(placement.position);
   // 低い姿勢（座り・寝そべりなど）は少し上から見下ろす。前後に長い寝そべりは斜め横から撮る
   const low = size.y < 1.2;
   const side = size.y < 0.6 && size.z > size.x * 1.3 ? 0.9 : 0;
   const length = side ? size.z * 0.8 : size.z * 0.75;
-  frame(center, Math.max(size.y, size.x * 0.75, length) * 1.2, low ? 0.4 : 0.08, side);
+  const pitch = placement.lying ? 0.95 : placement.onBed ? 0.55 : low ? 0.4 : 0.08;
+  const bounds = box.clone().applyMatrix4(
+    new THREE.Matrix4().makeRotationY(placement.rotationY).setPosition(placement.position),
+  );
+  frame(center, Math.max(size.y, size.x * 0.75, length) * 1.2, pitch, side + placement.rotationY, bounds);
 }
 
 function select(motion: Motion) {
@@ -238,10 +270,11 @@ function applyFov() {
  * target を中心に、高さ span（m）が画面に収まる距離から撮り、手で回せるようにする。
  * 向きは、手で回していればその向きのまま（見下ろす角度 pitch は最初だけ）、まだなら正面から
  */
-function frame(target: THREE.Vector3, span: number, pitch: number, yaw = 0) {
+function frame(target: THREE.Vector3, span: number, pitch: number, yaw = 0, bounds?: THREE.Box3) {
   const camera = stage.viewCamera;
   applyFov();
-  const distance = span / 2 / Math.tan(THREE.MathUtils.degToRad(FOV) / 2);
+  const tan = Math.tan(THREE.MathUtils.degToRad(FOV) / 2);
+  let distance = span / 2 / tan;
   const direction = controls
     ? camera.position.clone().sub(controls.target).normalize()
     : front(pitch, yaw);
@@ -258,6 +291,23 @@ function frame(target: THREE.Vector3, span: number, pitch: number, yaw = 0) {
     tick();
   } else if (!userOrbited) {
     direction.copy(front(pitch, yaw));
+  }
+  // 回転した寝姿と縦長の画面でも手足が切れない距離。各隅の奥行きも含めて透視投影で合わせる。
+  if (bounds) {
+    const right = new THREE.Vector3().crossVectors(camera.up, direction).normalize();
+    const up = new THREE.Vector3().crossVectors(direction, right).normalize();
+    for (const x of [bounds.min.x, bounds.max.x]) {
+      for (const y of [bounds.min.y, bounds.max.y]) {
+        for (const z of [bounds.min.z, bounds.max.z]) {
+          const point = new THREE.Vector3(x, y, z).sub(target);
+          distance = Math.max(distance, point.dot(direction) + Math.max(
+            Math.abs(point.dot(up)) / tan,
+            Math.abs(point.dot(right)) / (tan * camera.aspect),
+          ));
+        }
+      }
+    }
+    distance *= 1.05;
   }
   camera.position.copy(target).addScaledVector(direction, distance);
   controls.target.copy(target);

@@ -1,0 +1,277 @@
+{
+  "full_P049": {
+    "lowerHips": 0.084,
+    "levelTorso": true,
+    "restStraightLegs": true,
+    "bedOffsetX": 0.22
+  },
+  "full_P052": {
+    "lowerHips": 0.0524,
+    "levelTorso": true,
+    "restStraightLegs": true,
+    "bedOffsetX": 0.22
+  },
+  "full_P056": {
+    "lowerHips": 0.164,
+    "levelTorso": true,
+    "bedOffsetX": 0.22
+  },
+  "full_P058": {
+    "lowerHips": 0.02,
+    "levelTorso": true,
+    "restStraightLegs": true,
+    "bedOffsetX": 0.22
+  },
+  "full_P059": {
+    "lowerHips": 0.097,
+    "levelTorso": true,
+    "bedOffsetX": 0.22
+  },
+  "full_P001": {
+    "lowerHips": 0.1136,
+    "bedOffsetX": 0.22,
+    "torsoLean": [
+      0,
+      6
+    ],
+    "hands": {
+      "Right": {
+        "surface": "bed",
+        "position": [
+          -0.29,
+          0.019,
+          -0.2
+        ],
+        "forward": [
+          -0.6,
+          0.8
+        ]
+      }
+    },
+    "bedOffsetZ": 0.5
+  },
+  "full_P002": {
+    "lowerHips": 0.1157,
+    "bedOffsetX": 0.22,
+    "torsoLean": [
+      0,
+      24
+    ],
+    "hands": {
+      "Right": {
+        "surface": "bed",
+        "position": [
+          -0.32,
+          0.025,
+          -0.08
+        ],
+        "forward": [
+          -0.6,
+          0.8
+        ]
+      }
+    },
+    "bedOffsetZ": 0.5
+  },
+  "full_P003": {
+    "lowerHips": 0.0436,
+    "bedOffsetX": 0.22
+  },
+  "full_P004": {
+    "lowerHips": 0.1876,
+    "bedOffsetX": 0.22
+  },
+  "full_P006": {
+    "lowerHips": 0.1011,
+    "bedOffsetX": 0.22
+  },
+  "full_P007": {
+    "lowerHips": 0.0221,
+    "bedOffsetX": 0.22
+  },
+  "full_P010": {
+    "lowerHips": 0.0633,
+    "bedOffsetX": 0.22
+  },
+  "full_P012": {
+    "lowerHips": 0.1254,
+    "bedOffsetX": 0.22
+  },
+  "full_P041": {
+    "lowerHips": 0.1519,
+    "bedOffsetX": 0.22,
+    "foldedLegs": {
+      "ankleX": 0.26,
+      "ankleZ": -0.02,
+      "ankleY": 0.075,
+      "kneeY": 0.06
+    },
+    "hands": {
+      "Left": {
+        "surface": "thigh",
+        "leg": "Left",
+        "along": 0.5,
+        "height": 0.085
+      },
+      "Right": {
+        "surface": "thigh",
+        "leg": "Right",
+        "along": 0.5,
+        "height": 0.085
+      }
+    },
+    "bedOffsetZ": 0.5
+  },
+  "full_P042": {
+    "lowerHips": 0.1503,
+    "bedOffsetX": 0.22,
+    "foldedLegs": {
+      "ankleX": 0.26,
+      "ankleZ": -0.02,
+      "ankleY": 0.075,
+      "kneeY": 0.06
+    },
+    "hands": {
+      "Left": {
+        "surface": "bed",
+        "position": [
+          0.13,
+          0.027,
+          0.43
+        ]
+      },
+      "Right": {
+        "surface": "bed",
+        "position": [
+          -0.13,
+          0.027,
+          0.43
+        ]
+      }
+    },
+    "torsoLean": [
+      25,
+      0
+    ],
+    "bedOffsetZ": 0.5
+  },
+  "full_P043": {
+    "lowerHips": 0.1561,
+    "bedOffsetX": 0.22
+  },
+  "full_P044": {
+    "lowerHips": 0.1398,
+    "bedOffsetX": 0.22,
+    "foldedLegs": {
+      "ankleX": 0.26,
+      "ankleZ": -0.02,
+      "ankleY": 0.075,
+      "kneeY": 0.06
+    },
+    "torsoLean": [
+      -42,
+      0
+    ],
+    "hands": {
+      "Left": {
+        "surface": "bed",
+        "position": [
+          0.22,
+          0.005,
+          -0.35
+        ],
+        "forward": [
+          1,
+          0
+        ]
+      },
+      "Right": {
+        "surface": "bed",
+        "position": [
+          -0.22,
+          0.019,
+          -0.35
+        ],
+        "forward": [
+          -1,
+          0
+        ]
+      }
+    },
+    "bedOffsetZ": 0.5,
+    "keepHeadFacing": true
+  },
+  "full_P045": {
+    "lowerHips": 0.082,
+    "bedOffsetX": 0.22
+  },
+  "full_P046": {
+    "lowerHips": 0.0695,
+    "bedOffsetX": 0.22,
+    "torsoLean": [
+      0,
+      22
+    ],
+    "hands": {
+      "Right": {
+        "surface": "bed",
+        "position": [
+          -0.33,
+          0.024,
+          0.03
+        ],
+        "forward": [
+          -1,
+          0
+        ]
+      }
+    },
+    "bedOffsetZ": 0.5
+  },
+  "full_P047": {
+    "lowerHips": 0.0755,
+    "bedOffsetX": 0.22,
+    "torsoLean": [
+      0,
+      10
+    ],
+    "hands": {
+      "Right": {
+        "surface": "bed",
+        "position": [
+          -0.34,
+          0.0205,
+          0.015
+        ],
+        "forward": [
+          -1,
+          0
+        ]
+      }
+    },
+    "bedOffsetZ": 0.5
+  },
+  "full_P048": {
+    "lowerHips": 0.1204,
+    "bedOffsetX": 0.22,
+    "foldedLegs": {
+      "ankleX": 0.26,
+      "ankleZ": -0.02,
+      "ankleY": 0.075,
+      "kneeY": 0.06
+    },
+    "hands": {
+      "Right": {
+        "surface": "thigh",
+        "leg": "Right",
+        "along": 0.5,
+        "height": 0.081
+      }
+    },
+    "bedOffsetZ": 0.5
+  },
+  "full_P079": {
+    "lowerHips": 0.058,
+    "bedOffsetX": 0.22
+  }
+}
